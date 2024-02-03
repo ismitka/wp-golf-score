@@ -41,3 +41,17 @@ Today Only
 </span>
 ```
 
+Build CSS 
+```bash
+sass src/golf-score.scss:static/golf-score.css
+```
+
+Update dependencies
+```bash
+npm install
+```
+
+Compile JS
+```bash
+pnpm run build
+```
