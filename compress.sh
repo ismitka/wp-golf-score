@@ -1,0 +1,1 @@
+(cd ../ && zip -r  wp-golf-score/wp-golf-score.zip wp-golf-score/index.html wp-golf-score/proxy.php wp-golf-score/readme.txt wp-golf-score/wp-golf-score.php wp-golf-score/dist wp-golf-score/static)
