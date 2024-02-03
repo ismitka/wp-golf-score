@@ -55,3 +55,8 @@ Compile JS
 ```bash
 pnpm run build
 ```
+
+Create plugin archive
+```bash
+./compress.sh
+```
