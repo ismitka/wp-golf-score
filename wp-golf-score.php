@@ -2,7 +2,7 @@
 /*
  * Plugin Name: WP-Golf-Score
  * Plugin URI: https://www.smitka.net/wp-golf-score
- * Description: JavaScript init elements by Time
+ * Description: Calculate Golf Feeling Score depends on weather forecast and Season. Script periodically sets css class for elements with attribute data-day
  * Version: 1.0
  * Author: Ivan Smitka
  * Author URI: http://www.smitka.net
@@ -51,8 +51,9 @@ class WP_Golf_Score
         foreach (scandir(__DIR__ . "/dist/assets") as $path) {
             $pathInfo = pathinfo($path);
             if (strpos($pathInfo["filename"], "index") === 0) {
-                wp_enqueue_script('wp-time', plugins_url("/dist/assets/{$path}", __FILE__), ['jquery']);
-                wp_enqueue_style('wp-time', plugins_url('/static/golf-score.css', __FILE__));
+                wp_enqueue_script('wp-golf-score', plugins_url("/dist/assets/{$path}", __FILE__), ['jquery']);
+                wp_enqueue_style('wp-golf-score', plugins_url('/static/golf-score.css', __FILE__));
+				break;
             }
         }
     }
