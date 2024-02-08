@@ -157,7 +157,8 @@ export namespace WpGolfScore {
         "score-10",
         "diff-eq",
         "diff-up",
-        "diff-down"
+        "diff-down",
+        "with-date"
     ];
 
     const processScore = (element: HTMLElement, score: Score): void => {
@@ -179,6 +180,7 @@ export namespace WpGolfScore {
                 target.classList.add("diff-" + (dayScore > prevScore ? "up" : dayScore < prevScore ? "down" : "eq"));
                 target.textContent = dayScore.toString();
                 if (element.getAttribute("data-date-element") === "1") {
+                    target.classList.add("with-date");
                     let dateElement = target.querySelector<HTMLElement>("[data-date]");
                     if (dateElement === null) {
                         dateElement = document.createElement("span");

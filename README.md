@@ -30,13 +30,13 @@ Show Golf Feeling Score - full config
 Simple Use. Inner elements will be added automatically
 
 ```html
-    <span data-golf-score='{"lat": 0, "lon": 0}'></span>
+<span data-golf-score='{"lat": 0, "lon": 0}'></span>
 ```
 
 Today Only
 
 ```html
-<span data-golf-score='{"lat": 0, "lon": 0}'></span>
+<span data-golf-score='{"lat": 0, "lon": 0}'>
     <span data-day="0"></span>
 </span>
 ```
