@@ -20,6 +20,7 @@ parameters:
 * lat/lon: geo coordinates of forecasted place
 * days: 1-3 calculate score for n following days (include today)
 * date: true/false include date
+* class: any custom css class. "small-img" special class, image same size as score index
 
 Build CSS 
 ```bash

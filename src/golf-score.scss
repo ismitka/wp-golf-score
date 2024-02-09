@@ -59,4 +59,13 @@
             font-size: 0.75em;
         }
     }
+
+    &.small-img {
+        [data-day] {
+            img {
+                height: 1em;
+            }
+        }
+    }
+
 }
