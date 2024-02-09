@@ -144,23 +144,6 @@ export namespace WpGolfScore {
         return score;
     };
 
-    const elementClasses = [
-        "score-1",
-        "score-2",
-        "score-3",
-        "score-4",
-        "score-5",
-        "score-6",
-        "score-7",
-        "score-8",
-        "score-9",
-        "score-10",
-        "diff-eq",
-        "diff-up",
-        "diff-down",
-        "with-date"
-    ];
-
     const processScore = (element: HTMLElement, score: Score): void => {
         //console.log("processScore", element, score);
         let i;
@@ -175,13 +158,9 @@ export namespace WpGolfScore {
                 element.append(target);
             }
             if (target !== null) {
-                target.classList.remove(...elementClasses);
-                target.classList.add("score-" + dayScore);
-                target.classList.add("diff-" + (dayScore > prevScore ? "up" : dayScore < prevScore ? "down" : "eq"));
-                target.textContent = dayScore.toString();
                 if (element.getAttribute("data-date-element") === "1") {
                     target.classList.add("with-date");
-                    let dateElement = target.querySelector<HTMLElement>("[data-date]");
+                    let dateElement = target.querySelector<HTMLSpanElement>("[data-date]");
                     if (dateElement === null) {
                         dateElement = document.createElement("span");
                         dateElement.setAttribute("data-date", "1");
@@ -194,7 +173,25 @@ export namespace WpGolfScore {
                         month: "numeric",
                         day: "numeric",
                     });
+                } else {
+                    target.classList.remove("with-date");
                 }
+
+                const icon = "/wp-content/plugins/wp-golf-score/static/img/" + (dayScore > prevScore ? "up" : dayScore < prevScore ? "dn" : "eq") + ".png";
+                let iconElement = target.querySelector<HTMLImageElement>("img");
+                if (iconElement === null) {
+                    iconElement = document.createElement("img");
+                    iconElement.setAttribute("src", icon);
+                    target.append(iconElement);
+                }
+
+                let scoreElement = target.querySelector<HTMLSpanElement>("[data-score]");
+                if (scoreElement === null) {
+                    scoreElement = document.createElement("span");
+                    scoreElement.setAttribute("data-score", "");
+                    target.append(scoreElement);
+                }
+                scoreElement.textContent = dayScore.toString();
             }
             prevScore = dayScore;
         }

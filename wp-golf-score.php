@@ -32,33 +32,61 @@
  *
  */
 
-class WP_Golf_Score
-{
+class WP_Golf_Score {
 
-    public static function init()
-    {
-        // Scripts
-        if (!is_admin()) { // show only in public area
-            add_action('wp_enqueue_scripts', [
-                'WP_Golf_Score',
-                'enqueue_scripts'
-            ]);
-        }
-    }
+	public static function init() {
+		// Scripts
+		if ( ! is_admin() ) { // show only in public area
+			add_action( 'wp_enqueue_scripts', [
+				'WP_Golf_Score',
+				'enqueue_scripts'
+			] );
+			add_shortcode( 'wp-golf-score', [ 'WP_Golf_Score', 'html' ] );
+		}
+	}
 
-    public static function enqueue_scripts()
-    {
-        foreach (scandir(__DIR__ . "/dist/assets") as $path) {
-            $pathInfo = pathinfo($path);
-            if (strpos($pathInfo["filename"], "index") === 0) {
-                wp_enqueue_script('wp-golf-score', plugins_url("/dist/assets/{$path}", __FILE__), ['jquery']);
-                wp_enqueue_style('wp-golf-score', plugins_url('/static/golf-score.css', __FILE__));
+	public static function enqueue_scripts() {
+		foreach ( scandir( __DIR__ . "/dist/assets" ) as $path ) {
+			$pathInfo = pathinfo( $path );
+			if ( strpos( $pathInfo["filename"], "index" ) === 0 ) {
+				wp_enqueue_script( 'wp-golf-score', plugins_url( "/dist/assets/{$path}", __FILE__ ), [ 'jquery' ] );
+				wp_enqueue_style( 'wp-golf-score', plugins_url( '/static/golf-score.css', __FILE__ ) );
 				break;
-            }
-        }
-    }
+			}
+		}
+	}
+
+	private static function is_true( $val, $return_null = false ) {
+		$boolval = ( is_string( $val ) ? filter_var( $val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE ) : (bool) $val );
+
+		return ( $boolval === null && ! $return_null ? false : $boolval );
+	}
+
+	public static function html( $args = [] ) {
+		$lat   = floatval( $args["lat"] );
+		$lon   = floatval( $args["lon"] );
+		$days  = intval( $args["days"] );
+		$date  = self::is_true( $args["date"] ?? "true" );
+		$class = $args["class"];
+		if ( $days < 0 ) {
+			$days = 0;
+		} else if ( $days > 3 ) {
+			$days = 3;
+		}
+		ob_start();
+		?>
+        <span data-golf-score='<?= json_encode( [ "lat" => $lat, "lon" => $lon ] ) ?>'
+              class="<?= $class ?>" <?= $date ? "data-date-element='1'" : "" ?>>
+            <?php if ( $days >= 0 ) {
+	            for ( $i = 0; $i < $days; $i ++ ) { ?><span data-day="<?= $i ?>"></span><?php }
+            } ?>
+        </span>
+		<?php
+		return ob_get_clean();
+	}
 }
 
-add_action('plugins_loaded', array(
-    'WP_Golf_Score',
-    'init'), 100);
+add_action( 'plugins_loaded', array(
+	'WP_Golf_Score',
+	'init'
+), 100 );

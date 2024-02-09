@@ -24,49 +24,28 @@
  *
  */
 
-$res: "./img";
-
 [data-golf-score] {
     display: block;
     text-align: center;
 
     [data-day] {
         display: inline-block;
-        text-align: right;
         position: relative;
-        margin: 0.5rem 1.5rem;
-        line-height: 2.5rem;
-        font-size: 26px;
+        margin: 0 1.5em;
+        vertical-align: bottom;
 
         &.with-date {
-            padding-top: 2rem;
+            padding-top: 1.5em;
         }
 
-        &.diff-eq,
-        &.diff-up,
-        &.diff-down {
-            width: 4rem;
-            height: 2.5rem;
-            background-size: 2.5rem 2.5rem;
-            background-repeat: no-repeat;
-            box-sizing: content-box;
-
-            &.with-date {
-
-                background-position: 0 2rem;
-            }
+        img {
+            height: 2em;
+            width: auto;
+            margin: 0 0.25em;
         }
 
-        &.diff-eq {
-            background-image: url("#{$res}/eq.png");
-        }
-
-        &.diff-up {
-            background-image: url("#{$res}/up.png");
-        }
-
-        &.diff-down {
-            background-image: url("#{$res}/dn.png");
+        span[data-score] {
+            font-weight: 500;
         }
 
         span[data-date] {
@@ -76,37 +55,8 @@ $res: "./img";
             left: 0;
             width: 100%;
             text-align: center;
-            line-height: 1rem;
-            font-size: 1rem;
-        }
-    }
-
-    &.header {
-        [data-day] {
-            margin: 0;
-            line-height: 13px;
-            font-size: 13px;
-            background-position: 0;
-
-            &.with-date {
-                padding-top: 0;
-            }
-
-            &.diff-eq,
-            &.diff-up,
-            &.diff-down {
-                width: 24px;
-                height: 13px;
-                background-size: 13px;
-
-                &.with-date {
-                    background-position: 0;
-                }
-            }
-        }
-
-        span[data-date] {
-            display: none;
+            white-space: nowrap;
+            font-size: 0.75em;
         }
     }
 }
