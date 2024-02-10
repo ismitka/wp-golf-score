@@ -25,14 +25,17 @@
  */
 
 [data-golf-score] {
-    display: block;
+    display: flex;
     text-align: center;
+    width: fit-content;
+    margin: 0 auto;
 
     [data-day] {
-        display: inline-block;
+        display: flex;
+        justify-content: center;
+        width: 4em;
         position: relative;
-        margin: 0 1.5em;
-        vertical-align: bottom;
+        margin: 0 1em;
 
         &.with-date {
             padding-top: 1.5em;
@@ -46,6 +49,7 @@
 
         span[data-score] {
             font-weight: 500;
+            line-height: 2em;
         }
 
         span[data-date] {
@@ -56,16 +60,7 @@
             width: 100%;
             text-align: center;
             white-space: nowrap;
-            font-size: 0.75em;
+            font-size: 75%;
         }
     }
-
-    &.small-img {
-        [data-day] {
-            img {
-                height: 1em;
-            }
-        }
-    }
-
 }
