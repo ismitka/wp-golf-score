@@ -33,9 +33,11 @@
     [data-day] {
         display: flex;
         justify-content: center;
-        width: 4em;
+        width: 3em;
         position: relative;
-        margin: 0 1em;
+        &:not(:first-child) {
+            margin-left: 2em;
+        }
 
         &.with-date {
             padding-top: 1.5em;
@@ -60,7 +62,7 @@
             width: 100%;
             text-align: center;
             white-space: nowrap;
-            font-size: 75%;
+            font-size: 65%;
         }
     }
 }
