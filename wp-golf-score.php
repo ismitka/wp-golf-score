@@ -2,6 +2,7 @@
 /*
  * Plugin Name: WP-Golf-Score
  * Plugin URI: https://www.smitka.net/wp-golf-score
+ * Update URI: https://www.smitka.net/wp-plugin/wp-golf-score
  * Description: Calculate Golf Feeling Score depends on weather forecast and Season. Script periodically sets css class for elements with attribute data-day
  * Version: 1.0
  * Author: Ivan Smitka
@@ -42,6 +43,21 @@ class WP_Golf_Score {
 				'enqueue_scripts'
 			] );
 			add_shortcode( 'wp-golf-score', [ 'WP_Golf_Score', 'html' ] );
+		} else {
+			add_filter( 'update_plugins_www.smitka.net', function ( $update, $plugin_data, $plugin_file, $locales ) {
+				/*
+				This filter is applied inside a foreach loop in wp_update_plugins().
+				So, if there a several plugins using the same hostname as Update URI, our function will be run for each of those other plugins.
+				Better check if the loop has reached *our* plugin until we do anything.
+				 */
+				if ( $plugin_file == plugin_basename( __FILE__ ) ) {
+					$request      = wp_remote_get( $plugin_data['UpdateURI'] );
+					$request_body = wp_remote_retrieve_body( $request );
+					$update       = json_decode( $request_body, true );
+				}
+
+				return $update;
+			}, 10, 4 );
 		}
 	}
 
@@ -67,21 +83,32 @@ class WP_Golf_Score {
 		$lon   = floatval( $args["lon"] );
 		$days  = intval( $args["days"] );
 		$date  = self::is_true( $args["date"] ?? "true" );
-		$class = $args["class"];
+		$attrs = array_filter( $args, function ( $key ) {
+			return ! in_array( $key, [ "lat", "lon", "days" ] );
+		}, ARRAY_FILTER_USE_KEY );
+		$tag   = "span";
+		if ( array_key_exists( "href", $attrs ) ) {
+			$tag = "a";
+		}
+
 		if ( $days < 0 ) {
 			$days = 0;
 		} else if ( $days > 3 ) {
 			$days = 3;
 		}
 		ob_start();
-		?>
-        <span data-golf-score='<?= json_encode( [ "lat" => $lat, "lon" => $lon ] ) ?>'
-              class="<?= $class ?>" <?= $date ? "data-date-element='1'" : "" ?>>
-            <?php if ( $days >= 0 ) {
-	            for ( $i = 0; $i < $days; $i ++ ) { ?><span data-day="<?= $i ?>"></span><?php }
-            } ?>
-        </span>
-		<?php
+		$attrs["data-golf-score"] = json_encode( [ "lat" => $lat, "lon" => $lon ] );
+		if ( $date ) {
+			$attrs["data-date-element"] = "1";
+		}
+		print "<{$tag} " . implode( " ", array_map( function ( $key ) use ( $attrs ) {
+				return "{$key}=\"{$attrs[$key]}\"";
+			}, array_keys( $attrs ) ) ) . ">";
+		for ( $i = 0; $i < $days; $i ++ ) {
+			print "<span data-day='{$i}'></span>";
+		}
+		print "</{$tag}>";
+
 		return ob_get_clean();
 	}
 }
