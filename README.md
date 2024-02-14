@@ -13,14 +13,14 @@ Show Golf Feeling Score - full config short-code
 # minimal
 [wp-golf-score lat=50.2 lon=14.678]
 # full
-[wp-golf-score lat=50.2 lon=14.678 class="header" date=false days=3]
+[wp-golf-score lat=50.2 lon=14.678 class="header" href="https://example.com" date=false days=3]
 ```
 parameters:
 
 * lat/lon: geo coordinates of forecasted place
 * days: 1-3 calculate score for n following days (include today)
 * date: true/false include date
-* class: any custom css class. "small-img" special class, image same size as score index
+* any other html attributes. When href attribute is used, tag will be rendered as anchor
 
 Build CSS 
 ```bash

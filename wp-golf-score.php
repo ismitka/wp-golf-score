@@ -4,7 +4,7 @@
  * Plugin URI: https://www.smitka.net/wp-golf-score
  * Update URI: https://www.smitka.net/wp-plugin/wp-golf-score
  * Description: Calculate Golf Feeling Score depends on weather forecast and Season. Script periodically sets css class for elements with attribute data-day
- * Version: 1.0
+ * Version: 1.1
  * Author: Ivan Smitka
  * Author URI: http://www.smitka.net
  * License: The MIT License
@@ -102,7 +102,7 @@ class WP_Golf_Score {
 			$attrs["data-date-element"] = "1";
 		}
 		print "<{$tag} " . implode( " ", array_map( function ( $key ) use ( $attrs ) {
-				return "{$key}=\"{$attrs[$key]}\"";
+				return "{$key}='{$attrs[$key]}'";
 			}, array_keys( $attrs ) ) ) . ">";
 		for ( $i = 0; $i < $days; $i ++ ) {
 			print "<span data-day='{$i}'></span>";
