@@ -1,12 +1,12 @@
 <?php
 /*
- * Plugin Name: WP-Golf-Score
+ * Plugin Name: Golf Score
  * Plugin URI: https://www.smitka.net/wp-golf-score
  * Update URI: https://www.smitka.net/wp-plugin/wp-golf-score
  * Description: Calculate Golf Feeling Score depends on weather forecast and Season. Script periodically sets css class for elements with attribute data-day
- * Version: 1.1
+ * Version: 1.2
  * Author: Ivan Smitka
- * Author URI: http://www.smitka.net
+ * Author URI: https://www.smitka.net
  * License: The MIT License
  *
  *
@@ -35,7 +35,9 @@
 
 class WP_Golf_Score {
 
-	public static function init() {
+	const UPDATE_URI = "https://www.smitka.net/wp-plugin/wp-golf-score";
+
+	public function init() {
 		// Scripts
 		if ( ! is_admin() ) { // show only in public area
 			add_action( 'wp_enqueue_scripts', [
@@ -45,20 +47,42 @@ class WP_Golf_Score {
 			add_shortcode( 'wp-golf-score', [ 'WP_Golf_Score', 'html' ] );
 		} else {
 			add_filter( 'update_plugins_www.smitka.net', function ( $update, $plugin_data, $plugin_file, $locales ) {
-				/*
-				This filter is applied inside a foreach loop in wp_update_plugins().
-				So, if there a several plugins using the same hostname as Update URI, our function will be run for each of those other plugins.
-				Better check if the loop has reached *our* plugin until we do anything.
-				 */
 				if ( $plugin_file == plugin_basename( __FILE__ ) ) {
-					$request      = wp_remote_get( $plugin_data['UpdateURI'] );
-					$request_body = wp_remote_retrieve_body( $request );
-					$update       = json_decode( $request_body, true );
+					$update = self::getUpdate( $plugin_data['UpdateURI'] );
 				}
 
 				return $update;
 			}, 10, 4 );
+			add_filter( 'plugins_api', function ( $res, $action, $args ) {
+				if ( 'plugin_information' !== $action ) {
+					return $res;
+				}
+				if ( plugin_basename( __DIR__ ) !== $args->slug ) {
+					return $res;
+				}
+
+				$update       = self::getUpdate( self::UPDATE_URI );
+				$res          = json_decode( json_encode( $update ), false );
+				$res->sections = $update["sections"];
+				$res->download_link = $update["package"];
+
+				return $res;
+
+			}, 9999, 3 );
 		}
+	}
+
+	/**
+	 * @param $update_URI
+	 *
+	 * @return mixed
+	 */
+	private static function getUpdate( $update_URI ) {
+		$request      = wp_remote_get( $update_URI );
+		$request_body = wp_remote_retrieve_body( $request );
+		$update       = json_decode( $request_body, true );
+
+		return $update;
 	}
 
 	public static function enqueue_scripts() {
@@ -111,6 +135,7 @@ class WP_Golf_Score {
 
 		return ob_get_clean();
 	}
+
 }
 
 add_action( 'plugins_loaded', array(
