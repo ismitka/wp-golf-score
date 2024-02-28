@@ -69,14 +69,17 @@ export namespace WpGolfScore {
     };
 
     const calculateScore = (dayOfWeek: number, month: number, temp: number, clouds: number, rain: number, thunder: number, wind: number): number => {
-        //console.log("calculateScore", dayOfWeek, month, temp, wind, rain, clouds, thunder);
-        var score = [9, 1, 4, 5, 5, 8, 10][dayOfWeek] * 4;
-        score += ([1, 1, 5, 8, 10, 10, 8, 7, 8, 6, 3, 1][month]) * 7;
-        score += mapValue([10, 20, 30, 35], [1, 3, 10, 8, 5], temp) * 10
-        score += mapValue([8, 14], [10, 8, 3], wind) * 6;
-        score += mapValue([30, 60], [9, 10, 7], clouds) * 3;
-        score += mapValue([0, 2.5, 8], [10, 6, 5, 1], rain) * 10;
-        score += mapValue([10, 40], [10, 6, 1], thunder) * 10;
+        const dayOfWeekScore = [9, 1, 4, 5, 5, 8, 10][dayOfWeek] * 4;
+        const monthScore = ([1, 1, 5, 8, 10, 10, 8, 7, 8, 6, 3, 1][month]) * 7;
+        const tempScore = mapValue([10, 20, 30, 35], [1, 3, 10, 8, 5], temp) * 10
+        const windScore = mapValue([8, 14], [10, 8, 3], wind) * 6;
+        const cloudsScore = mapValue([30, 60], [9, 10, 7], clouds) * 3;
+        const rainScore = mapValue([0, 2.5, 8], [10, 6, 5, 1], rain) * 10;
+        const thunderScore = mapValue([10, 40], [10, 6, 1], thunder) * 10;
+        const score = dayOfWeekScore + monthScore + tempScore + windScore + cloudsScore + rainScore + thunderScore;
+
+        console.log("calculateScore for", dayOfWeek, month, temp, wind, rain, clouds, thunder);
+        console.log("calculateScore", dayOfWeek, month, temp, wind, rain, clouds, thunder);
         return Math.round(score / 50);
     };
 
@@ -139,6 +142,8 @@ export namespace WpGolfScore {
                         score["d" + dd] = calculateScore(dayOfWeek, month, temp, clouds, rain, thunder, wind);
                         break;
                 }
+            } else {
+                console.warn("Forecast not available", start, end);
             }
         }
         return score;

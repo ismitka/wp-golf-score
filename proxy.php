@@ -25,9 +25,8 @@
  *
  */
 
-if (\PHP_VERSION_ID < 80000) {
-	interface Stringable
-	{
+if ( \PHP_VERSION_ID < 80000 ) {
+	interface Stringable {
 		/**
 		 * @return string
 		 */
@@ -53,7 +52,7 @@ class Proxy implements Stringable {
 	 * @param float $lat
 	 * @param float $lon
 	 */
-	public function __construct($lat, $lon ) {
+	public function __construct( $lat, $lon ) {
 		$this->lat = $lat;
 		$this->lon = $lon;
 	}
@@ -75,20 +74,20 @@ class Proxy implements Stringable {
 		$storePath = $this->getStorePath();
 		if ( file_exists( $storePath ) ) {
 			$data = json_decode( file_get_contents( $storePath ), true );
-			if ( $data["ts"] < ( time() - ( 60 * 30 ) ) ) {
-				return $data;
-			}
 			$data["forecast"] = array_filter( $data["forecast"], function ( $key ) {
 				return $key > ( time() - ( 2 * 24 * 60 * 60 ) ); // 2 days
 			}, ARRAY_FILTER_USE_KEY );
 		} else {
 			$data = [
-				"forecast" => []
+				"forecast" => [],
+				"ts" => 0
 			];
 		}
-
-		if ( $this->update( $data ) ) {
-			$this->store( $data );
+		if ( ( time() - $data["ts"] ) > 60 * 30 ) {
+			// invalidate data
+			if ( $this->update( $data ) ) {
+				$this->store( $data );
+			}
 		}
 
 		return $data;
