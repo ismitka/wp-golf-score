@@ -37,7 +37,7 @@ class WP_Golf_Score {
 
 	const UPDATE_URI = "https://www.smitka.net/wp-plugin/wp-golf-score";
 
-	public function init() {
+	public static function init() {
 		// Scripts
 		if ( ! is_admin() ) { // show only in public area
 			add_action( 'wp_enqueue_scripts', [
@@ -53,7 +53,7 @@ class WP_Golf_Score {
 
 				return $update;
 			}, 10, 4 );
-			add_filter( 'plugins_api', function ( $res, $action, $args ) {
+			add_filter( 'plugins_api', static function ( $res, $action, $args ) {
 				if ( 'plugin_information' !== $action ) {
 					return $res;
 				}
@@ -61,9 +61,9 @@ class WP_Golf_Score {
 					return $res;
 				}
 
-				$update       = self::getUpdate( self::UPDATE_URI );
-				$res          = json_decode( json_encode( $update ), false );
-				$res->sections = $update["sections"];
+				$update             = self::getUpdate( self::UPDATE_URI );
+				$res                = json_decode( json_encode( $update ), false );
+				$res->sections      = $update["sections"];
 				$res->download_link = $update["package"];
 
 				return $res;
@@ -103,9 +103,9 @@ class WP_Golf_Score {
 	}
 
 	public static function html( $args = [] ) {
-		$lat   = floatval( $args["lat"] );
-		$lon   = floatval( $args["lon"] );
-		$days  = intval( $args["days"] );
+		$lat   = (float) array_key_exists( "lat", $args ) ? $args["lat"] : 0;
+		$lon   = (float) array_key_exists( "lon", $args ) ? $args["lon"] : 0;
+		$days  = (int) array_key_exists( "days", $args ) ? $args["days"] : 0;
 		$date  = self::is_true( $args["date"] ?? "true" );
 		$attrs = array_filter( $args, function ( $key ) {
 			return ! in_array( $key, [ "lat", "lon", "days" ] );
@@ -138,7 +138,7 @@ class WP_Golf_Score {
 
 }
 
-add_action( 'plugins_loaded', array(
+add_action( 'plugins_loaded', [
 	'WP_Golf_Score',
 	'init'
-), 100 );
+], 100 );

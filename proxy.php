@@ -64,7 +64,9 @@ class Proxy implements Stringable {
 	private function getStorePath(): string {
 		$path = __DIR__ . "/data";
 		if ( ! is_dir( $path ) ) {
-			mkdir( $path, 0755 );
+			if ( ! mkdir( $path, 0755 ) && ! is_dir( $path ) ) {
+				throw new \RuntimeException( sprintf( 'Directory "%s" was not created', $path ) );
+			}
 		}
 
 		return "{$path}/F_{$this->lat}_{$this->lon}.json";
@@ -133,8 +135,8 @@ class Proxy implements Stringable {
 	}
 }
 
-$lat = floatval( $_GET["lat"] );
-$lon = floatval( $_GET["lon"] );
+$lat = (float) array_key_exists("lat", $_GET) ? $_GET["lat"] : 0;
+$lon = (float) array_key_exists("lon", $_GET) ? $_GET["lon"] : 0;
 
 header( 'Cache-Control: no-cache, must-revalidate' );
 header( 'Content-Type: application/json; charset=utf-8' );
