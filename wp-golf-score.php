@@ -40,10 +40,7 @@ class WP_Golf_Score {
 	public static function init() {
 		// Scripts
 		if ( ! is_admin() ) { // show only in public area
-			add_action( 'wp_enqueue_scripts', [
-				'WP_Golf_Score',
-				'enqueue_scripts'
-			] );
+			add_action( 'wp_enqueue_scripts', [ 'WP_Golf_Score', 'enqueue_scripts' ] );
 			add_shortcode( 'wp-golf-score', [ 'WP_Golf_Score', 'html' ] );
 		} else {
 			add_filter( 'update_plugins_www.smitka.net', function ( $update, $plugin_data, $plugin_file, $locales ) {
