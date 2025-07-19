@@ -1,6 +1,6 @@
 #!/bin/bash
 sass src/golf-score.scss static/golf-score.css
-VERSION=$(git tag -l)
+VERSION=$(git tag -l | sort -r | head -1)
 echo "${VERSION}"
 sed -i -E "s/^ \* Version\: .*$/ * Version: ${VERSION}/g" wp-golf-score.php
 (cd ../ && zip -r wp-golf-score/${VERSION}.zip \
